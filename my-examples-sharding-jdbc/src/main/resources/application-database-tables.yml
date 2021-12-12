@@ -1,0 +1,51 @@
+spring:
+  shardingsphere:
+    datasource:
+      names: ds0,ds1
+      ds0:
+        url: jdbc:mysql://localhost:3306/edu_db_1?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: root
+        password: 123456
+        type: com.alibaba.druid.pool.DruidDataSource
+      ds1:
+        url: jdbc:mysql://localhost:3306/edu_db_2?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: root
+        password: 123456
+        type: com.alibaba.druid.pool.DruidDataSource
+
+    sharding:
+      tables:
+        course:
+          actual-data-nodes: ds$->{0..1}.course_$->{1..2}
+          key-generator:
+            # 指定cid生成策略
+            column: cid
+            type: SNOWFLAKE
+          # 指定分表策略，约定cid值偶数添加到course_1，cid为奇数添加到course_2
+          table-strategy:
+            inline:
+              sharding-column: cid
+              algorithm-expression: course_$->{cid % 2 + 1}
+          # 指定分库策略，约定user_id值偶数添加到edu_db_1，user_id为奇数添加到edu_db_2
+          database-strategy:
+            inline:
+              sharding-column: user_id
+              algorithm-expression: ds$->{user_id % 2}
+        t_udict:
+          key-generator:
+            column: dictid
+            type: SNOWFLAKE
+      # 配置公共表
+      broadcast-tables: t_udict
+
+
+    # 打开SQL输出日志
+    props:
+
+      sql:
+        show:
+          true
+#  main:
+#    allow-bean-definition-overriding: true

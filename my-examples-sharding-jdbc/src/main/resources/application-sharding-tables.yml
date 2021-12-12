@@ -1,0 +1,31 @@
+spring:
+  shardingsphere:
+    datasource:
+      names: ds0
+      ds0:
+        url: jdbc:mysql://localhost:3306/course_db?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: root
+        password: 123456
+        type: com.alibaba.druid.pool.DruidDataSource
+    sharding:
+      tables:
+        course:
+          actual-data-nodes: ds0.course_$->{1..2}
+          key-generator:
+            # 指定cid生成策略
+            column: cid
+            type: SNOWFLAKE
+          # 指定分片策略，约定cid值偶数添加到course_1，cid为奇数添加到course_2
+          table-strategy:
+            inline:
+              sharding-column: cid
+              algorithm-expression: course_$->{cid % 2 + 1}
+
+    # 打开SQL输出日志
+    props:
+      sql:
+        show:
+          true
+#  main:
+#    allow-bean-definition-overriding: true

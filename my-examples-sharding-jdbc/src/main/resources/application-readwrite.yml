@@ -1,0 +1,48 @@
+spring:
+  shardingsphere:
+    datasource:
+      names: m0,s0
+      m0:
+        url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: root
+        password: 123456
+        type: com.alibaba.druid.pool.DruidDataSource
+      s0:
+        url: jdbc:mysql://localhost:3307/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: root
+        password: 123456
+        type: com.alibaba.druid.pool.DruidDataSource
+
+    sharding:
+      tables:
+        user:
+          actual-data-nodes: ds0.user
+          key-generator:
+            # 指定生成策略
+            column: user_id
+            type: SNOWFLAKE
+      # 读写分离
+      master-slave-rules:
+        ds0:
+#          primary-data-source-name: m0
+          master-data-source-name: m0
+#          replica-data-source-names: s0
+          slave-data-source-names: s0
+          load-balance-algorithm-type: ROUND_ROBIN
+
+
+    # 打开SQL输出日志
+    props:
+      sql:
+        show:
+          true
+#    masterslave:
+#      name: ds0
+#      master-data-source-name: m0
+#      slave-data-source-names: s0
+#      load-balance-algorithm-type: ROUND_ROBIN
+
+#  main:
+#    allow-bean-definition-overriding: true
