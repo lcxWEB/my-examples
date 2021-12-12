@@ -4,7 +4,7 @@ package java.lang;
  * @author: lichunxia
  * @create: 2021-01-02 23:36
  */
-public class String {
+public class String1 {
 
 
     static {
