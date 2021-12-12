@@ -21,3 +21,26 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+#some local files
+*/.settings/
+*/.DS_Store
+.DS_Store
+*/.idea/
+.idea/
+
+
+
+# Intellij
+*.iml
+*/*.iml
+
+
+# Generated files
+*/bin/
+*/gen/
+*/out/
+*/target/
+
+
+
